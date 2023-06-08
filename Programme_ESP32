@@ -1,0 +1,29 @@
+#include "BluetoothSerial.h"
+
+BluetoothSerial SerialBT;
+
+int sensor;
+int prevSensor = 0;
+bool arrowShot = false;
+
+void setup()
+{
+  SerialBT.begin("ESP32"); // notre client Bluetooth s'appelera "ESP32"
+  pinMode(4, INPUT);
+  analogReadResolution(12); // Configure la résolution de l'ADC à 12 bits
+}
+
+void loop(){
+  sensor = analogRead(4);
+
+  if (sensor >= 1000 && prevSensor < 1000 && !arrowShot){
+    arrowShot = true;
+    SerialBT.println(true);
+  }
+
+  if (sensor < 1000){
+    arrowShot = false;
+  }
+
+  prevSensor = sensor;
+}
